@@ -93,44 +93,23 @@ public class ReceiveActivity extends AppCompatActivity {
                 Log.d("BGLIGHTINTENSITY",""+bgIntensity);
 
                 Log.d("CURRENTLIGHTINTENSITY",""+currentLightIntensity);
-                if (currentLightIntensity > 50 && !started) {
+                if (currentLightIntensity > 1000 && !started) {
                     lastTime = System.currentTimeMillis();
                     started = true;
 //                    mTextViewLightLabel.setText("1");
 //                    rawReading += "1";
                 }
                 //long timestamp = event.timestamp;
-                if (currentLightIntensity > (bgIntensity+1000)) {
+                if (currentLightIntensity > (bgIntensity)) {
                     bit = "1";
                 } else {
                     bit = "0";
                 }
 
-                if ((currentTime - lastTime) > 1000 && started) {
+                if ((currentTime - lastTime)>499 && started) {
 
                     Log.d("Bit:", bit);
-                    /*if(bit=="1" && !rawReading.contains("1")){
-                        rawReading="1";
-                    }
-                    else if(rawReading.contains("1")){
 
-                        Log.d("TIME",currentTime+" ---- "+ lastTime);
-                        Log.d("1 second.", "passed.");
-                        lastTime = currentTime;
-                        records.put(currentTime - startTime, currentLightIntensity);
-
-//                    mTextViewLightLabel.setText(bit);
-                        rawReading += bit;
-
-                        Log.d("RawReadingNikhil",rawReading);
-
-                    }*/
-
-
-
-
-
-                    Log.d("TIME",currentTime+" ---- "+ lastTime);
                     Log.d("1 second.", "passed.");
                     lastTime = currentTime;
                     records.put(currentTime - startTime, currentLightIntensity);
@@ -138,7 +117,10 @@ public class ReceiveActivity extends AppCompatActivity {
 //                    mTextViewLightLabel.setText(bit);
                     rawReading += bit;
 
-                    Log.d("RawReadingNikhil",rawReading);
+
+
+
+
                 }
 
 
@@ -153,45 +135,12 @@ public class ReceiveActivity extends AppCompatActivity {
                 String stopBits = bc.getStopBits();
 
 
-                if (rawReading.length() >=15) {
+                if (rawReading.length() >=3) {
 
 
 
 
                     //code by nikhil
-
-
-                    int startSubstringIndex = rawReading.indexOf("00100");
-
-                    Log.d("START",rawReading.substring(startSubstringIndex,startSubstringIndex+2));
-
-                    if (!startBitDetected) {
-                        if (lastFiveBits.equals(startBits)) {
-                            System.out.println("Start bit detected.");
-                            mTextViewLightLabel.setText("Start bit detected.");
-                            startBitDetected = true;
-                            // received =  "";
-                            // System.exit(0);
-                        }
-                    } else {
-
-                        if (!lastFiveBits.equals(stopBits)) {
-                            payload += lastFiveBits;
-                            System.out.println("Stop bit detected.");
-                            isTransferring = false;
-//                            mSensorManager.unregisterListener(mEventListenerLight);
-//                            updateUI();
-                            mSensorManager.unregisterListener(mEventListenerLight);
-                            updateUI();
-                        } else {
-//                            System.out.println("Stop bit detected.");
-//                            isTransferring = false;
-////                            mSensorManager.unregisterListener(mEventListenerLight);
-////                            updateUI();
-//                            mSensorManager.unregisterListener(mEventListenerLight);
-//                            updateUI();
-                        }
-                    }
 
 
 
