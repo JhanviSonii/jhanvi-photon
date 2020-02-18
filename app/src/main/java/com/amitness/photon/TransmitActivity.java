@@ -156,16 +156,22 @@ public class TransmitActivity extends AppCompatActivity implements AdapterView.O
     }
 
     private void transmitData() {
-        final int frequency = 2; // bps
+        final int frequency = 1; // bps
         final int milliSecond = 1000 / frequency;
         FlashLight led = new FlashLight();
         try {
+            Log.d("bitstreamNikhil",String.valueOf(bitStream.toCharArray()));
             for (char bit : bitStream.toCharArray()) {
+                Log.d("BITS-FLASH",""+bit);
+
                 if (bit == '1') {
                     led.turnOn();
                 } else {
                     led.turnOff();
                 }
+                long currentTime = System.currentTimeMillis();
+                Log.d("CURrrentTime",""+currentTime);
+
                 sleep(milliSecond);
             }
             led.release();

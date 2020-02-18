@@ -69,8 +69,11 @@ public class ReceiveActivity extends AppCompatActivity {
 //        mTextViewLightLabel.setText("Receiving...");
 
         mEventListenerLight = new SensorEventListener() {
+
             @Override
             public void onSensorChanged(SensorEvent event) {
+                long currentTime = System.currentTimeMillis();
+
 
                 if (bgIntensity == -1) {
                     //startTime = System.currentTimeMillis();
@@ -87,27 +90,55 @@ public class ReceiveActivity extends AppCompatActivity {
 
                 Log.d("RawReading:", String.valueOf(rawReading));
                 currentLightIntensity = event.values[0];
-                if (currentLightIntensity > 1000 && !started) {
+                Log.d("BGLIGHTINTENSITY",""+bgIntensity);
+
+                Log.d("CURRENTLIGHTINTENSITY",""+currentLightIntensity);
+                if (currentLightIntensity > 50 && !started) {
                     lastTime = System.currentTimeMillis();
                     started = true;
 //                    mTextViewLightLabel.setText("1");
 //                    rawReading += "1";
                 }
                 //long timestamp = event.timestamp;
-                if (currentLightIntensity > bgIntensity) {
+                if (currentLightIntensity > (bgIntensity+1000)) {
                     bit = "1";
                 } else {
                     bit = "0";
                 }
-                long currentTime = System.currentTimeMillis();
 
-                if ((currentTime - lastTime) > 499 && started) {
+                if ((currentTime - lastTime) > 1000 && started) {
+
+                    Log.d("Bit:", bit);
+                    /*if(bit=="1" && !rawReading.contains("1")){
+                        rawReading="1";
+                    }
+                    else if(rawReading.contains("1")){
+
+                        Log.d("TIME",currentTime+" ---- "+ lastTime);
+                        Log.d("1 second.", "passed.");
+                        lastTime = currentTime;
+                        records.put(currentTime - startTime, currentLightIntensity);
+
+//                    mTextViewLightLabel.setText(bit);
+                        rawReading += bit;
+
+                        Log.d("RawReadingNikhil",rawReading);
+
+                    }*/
+
+
+
+
+
+                    Log.d("TIME",currentTime+" ---- "+ lastTime);
                     Log.d("1 second.", "passed.");
                     lastTime = currentTime;
                     records.put(currentTime - startTime, currentLightIntensity);
                     Log.d("Bit:", bit);
 //                    mTextViewLightLabel.setText(bit);
                     rawReading += bit;
+
+                    Log.d("RawReadingNikhil",rawReading);
                 }
 
 
@@ -122,7 +153,52 @@ public class ReceiveActivity extends AppCompatActivity {
                 String stopBits = bc.getStopBits();
 
 
-                if (rawReading.length() >= 3) {
+                if (rawReading.length() >=15) {
+
+
+
+
+                    //code by nikhil
+
+
+                    int startSubstringIndex = rawReading.indexOf("00100");
+
+                    Log.d("START",rawReading.substring(startSubstringIndex,startSubstringIndex+2));
+
+                    if (!startBitDetected) {
+                        if (lastFiveBits.equals(startBits)) {
+                            System.out.println("Start bit detected.");
+                            mTextViewLightLabel.setText("Start bit detected.");
+                            startBitDetected = true;
+                            // received =  "";
+                            // System.exit(0);
+                        }
+                    } else {
+
+                        if (!lastFiveBits.equals(stopBits)) {
+                            payload += lastFiveBits;
+                            System.out.println("Stop bit detected.");
+                            isTransferring = false;
+//                            mSensorManager.unregisterListener(mEventListenerLight);
+//                            updateUI();
+                            mSensorManager.unregisterListener(mEventListenerLight);
+                            updateUI();
+                        } else {
+//                            System.out.println("Stop bit detected.");
+//                            isTransferring = false;
+////                            mSensorManager.unregisterListener(mEventListenerLight);
+////                            updateUI();
+//                            mSensorManager.unregisterListener(mEventListenerLight);
+//                            updateUI();
+                        }
+                    }
+
+
+
+
+
+
+                    Log.d("RAWREADING-IF",rawReading);
                     lastFiveBits = rawReading.substring(rawReading.length() - 3);
                     if (!startBitDetected) {
                         if (lastFiveBits.equals(startBits)) {
@@ -151,7 +227,7 @@ public class ReceiveActivity extends AppCompatActivity {
 //                            updateUI();
                         }
                     }
-                    rawReading = "";
+                   rawReading = "";
                 }
                 // System.out.println("==>" + received);
 
@@ -187,7 +263,9 @@ public class ReceiveActivity extends AppCompatActivity {
             case "A":
                 Log.d("Got A.", received);
 //                intent = getAppIntent("com.kabouzeid.gramophone");
-                String fileLocation = "file:///" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/Music/Music/joel.mp3";
+                String fileLocation = "file:///" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/Music/Untitled.mp3";
+                Log.d("FilePath:",fileLocation);
+
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.parse(fileLocation), "audio/*");
 //                startActivity(intent);
